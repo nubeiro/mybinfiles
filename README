@@ -3,3 +3,5 @@ My bin files
 
 Utility scripts that live in my ~/bin. 
 
+
+- batcharge.py: See http://stevelosh.com/blog/2010/02/my-extravagant-zsh-prompt/#my-right-prompt-battery-capacity. Just a small tweak to make it work with acpi output on Linux.
