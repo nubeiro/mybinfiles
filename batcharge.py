@@ -6,6 +6,9 @@ import sys, math, subprocess, re
 p = subprocess.Popen(["acpi"], stdout=subprocess.PIPE)
 output = p.communicate()[0]
 
+if output == '': 
+	sys.exit()
+
 pattern = re.compile(r"[0-9]{1,3}%")
 
 match = pattern.search(output)
