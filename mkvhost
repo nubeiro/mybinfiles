@@ -1,0 +1,59 @@
+#!/bin/bash
+SITES_AVAILABLE='/etc/apache2/sites-available'
+HOST_FILE='/etc/hosts'
+CURRENT_DIR=${PWD}
+VHOST_SERVERNAME=$1
+USER_ID=`id -u`
+
+if test $UID -ne 0
+then 
+    echo "You must be root to run this script."
+    exit
+fi
+
+if test ! -z "$1"
+then
+    VHOST_SERVERNAME=$1
+else
+    echo "Please enter servername for vhost\n\c"
+    read VHOST_SERVERNAME
+fi
+FULLPATH="$SITES_AVAILABLE/$VHOST_SERVERNAME"
+if test -f $FULLPATH
+then
+    echo "File $FULLPATH already exists."
+    exit
+fi
+VHOST_DOCUMENTROOT=$CURRENT_DIR
+
+VHOST_TEMPLATE="
+<VirtualHost *:80>
+        ServerAdmin webmaster@localhost
+        ServerName $VHOST_SERVERNAME
+        DocumentRoot $CURRENT_DIR
+        <Directory />
+                Options FollowSymLinks
+                AllowOverride All
+        </Directory>
+        <Directory $CURRENT_DIR>
+                Options Indexes FollowSymLinks MultiViews
+                AllowOverride All
+                Order allow,deny
+                allow from all
+        </Directory>
+
+        ErrorLog \${APACHE_LOG_DIR}/$VHOST_SERVERNAME-error.log
+
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel warn
+
+        CustomLog \${APACHE_LOG_DIR}/$VHOST_SERVERNAME-access.log combined
+</VirtualHost>
+"
+echo "Writing vhost file:"
+echo "$FULLPATH"
+echo "$VHOST_TEMPLATE" >> $FULLPATH
+echo "127.0.1.1\t$VHOST_SERVERNAME" >> $HOST_FILE
+a2ensite $VHOST_SERVERNAME
+service apache2 reload
