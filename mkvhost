@@ -15,7 +15,7 @@ if test ! -z "$1"
 then
     VHOST_SERVERNAME=$1
 else
-    echo "Please enter servername for vhost\n\c"
+    echo "Please enter servername for vhost"
     read VHOST_SERVERNAME
 fi
 FULLPATH="$SITES_AVAILABLE/$VHOST_SERVERNAME"
@@ -43,11 +43,7 @@ VHOST_TEMPLATE="
         </Directory>
 
         ErrorLog \${APACHE_LOG_DIR}/$VHOST_SERVERNAME-error.log
-
-        # Possible values include: debug, info, notice, warn, error, crit,
-        # alert, emerg.
         LogLevel warn
-
         CustomLog \${APACHE_LOG_DIR}/$VHOST_SERVERNAME-access.log combined
 </VirtualHost>
 "

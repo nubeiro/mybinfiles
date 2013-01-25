@@ -1,0 +1,43 @@
+#!/bin/bash
+# Script to create the project folder in my projects folder and then make 
+# a virtual host. Makes use of mkvhost script. 
+# 
+# Remember to configure / change paths according to your system.
+# composer executable. This may be php composer.php. In my machine 
+# composer is installed system wide YMMV.
+${RETURNTO}=${PWD}
+
+COMPOSERCALL="composer"
+PROJECTSPATH=${HOME}/proxectos
+
+if test ! -z "$1"
+then
+    PROJECTNAME=$1
+else
+    echo "Please enter project name";
+    read PROJECTNAME
+fi
+
+FINALPATH=${PROJECTSPATH}/${PROJECTNAME}
+
+if test -d "${FINALPATH}"
+then
+    echo "${PROJECTNAME} already exists in $PROJECTSPATH"
+    exit 1
+fi
+
+echo "Calling composer on ${FINALPATH}:"
+composer create-project symfony/framework-standard-edition ${FINALPATH} 
+cd ${FINALPATH}/web && sudo mkvhost ${PROJECTNAME}
+
+# Fix cache and log folders permissions
+# This might not work on all systems.
+# Please go to http://symfony.com/doc/current/book/installation.html
+# and check what suits you best
+cd ${FINALPATH}
+rm -rf app/cache/*
+rm -rf app/logs/*
+sudo setfacl -R -m u:www-data:rwx -m u:`whoami`:rwx app/cache app/logs
+sudo setfacl -dR -m u:www-data:rwx -m u:`whoami`:rwx app/cache app/logs
+
+cd ${RETURNTO}
