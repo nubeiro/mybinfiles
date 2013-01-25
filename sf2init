@@ -5,7 +5,7 @@
 # Remember to configure / change paths according to your system.
 # composer executable. This may be php composer.php. In my machine 
 # composer is installed system wide YMMV.
-${RETURNTO}=${PWD}
+RETURNTO=${PWD}
 
 COMPOSERCALL="composer"
 PROJECTSPATH=${HOME}/proxectos
